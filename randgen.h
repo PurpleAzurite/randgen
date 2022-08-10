@@ -17,6 +17,8 @@ public:
 
 private:
     Ui::RandGen *ui;
-    QAction* m_closeAction;
+    QMenu* m_fileMenu;
+    QAction* m_generateAction;
+    QAction* m_exitAction;
 };
 #endif // RANDGEN_H

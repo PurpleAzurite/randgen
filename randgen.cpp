@@ -5,12 +5,18 @@
 RandGen::RandGen(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::RandGen)
-    , m_closeAction(new QAction("Closes the application", this))
+    , m_generateAction(new QAction("Generate", this))
+    , m_exitAction(new QAction("Exit", this))
 {
     ui->setupUi(this);
+    m_fileMenu = menuBar()->addMenu("File");
+    m_fileMenu->addAction(m_generateAction);
+    m_fileMenu->addAction(m_exitAction);
+
     ui->numberDisplay->setDigitCount(10);
 
-    connect(ui->generateButton, &QPushButton::clicked, this, [this]() {
+    m_generateAction->setShortcut(tr("Ctrl+r"));
+    connect(m_generateAction, &QAction::triggered, this, [this]() {
         std::random_device rd;
         std::mt19937 rng(rd());
         std::uniform_int_distribution<int> dist(ui->lowerBound->value(), ui->higherBound->value());
@@ -18,12 +24,10 @@ RandGen::RandGen(QWidget *parent)
         ui->numberDisplay->display(dist(rng));
     });
 
-    m_closeAction->setShortcut(tr("Ctrl+q"));
-    connect(m_closeAction, &QAction::triggered, this, []() {
-        QApplication::quit();
-    });
+    m_exitAction->setShortcut(tr("Ctrl+q"));
+    connect(m_exitAction, &QAction::triggered, this, [this]() { QApplication::quit(); });
 
-    ui->generateButton->setShortcut(tr("Ctrl+r"));
+    connect(ui->generateButton, &QPushButton::clicked, this, [this]() { m_generateAction->trigger(); });
 }
 
 RandGen::~RandGen()
